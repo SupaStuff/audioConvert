@@ -36,8 +36,8 @@ digAu::digAu(char *s)
 	f = new TagLib::FileRef(s);
 	if (!(*f).isNull() && (*f).tag())
 	{
-		std::cout << "********************************\n";
-		tag = (*f).tag();
+		std::cout << "\nSuccessfully initialized. I think...\n";
+		tag = f->tag();
 	}
 	rename = "";
 	name = s;
@@ -46,9 +46,10 @@ digAu::digAu(char *s)
 std::string digAu::getProperty(std::string s)
 {
 
-	std::cout << "you are here"; 
-		std::cout << "getting " << s << std::endl;
-		std::cout << "title ";
+		std::cout << "getProperty()\n"; 
+		//*******************************************************************************
+		//(4)crashes at this line. I put this here to see if it was this or my crash ifs
+		//*******************************************************************************
 		std::cout << tag->title() << std::endl;
 
 		if (std::strcmp((char*)toUpper(s).c_str(), "ALBUM")) return tag->album().toCString();
@@ -68,11 +69,14 @@ std::string digAu::getProperty(std::string s)
 
 void digAu::addProperty(std::string s)
 {
-	std::cout << "\nadding " << s<<std::endl;
+	//**********************************************************************************
+	// (3) this is fine, I hope. All the mayhem happens in digAu::getProperty() for now
+	//**********************************************************************************
+	std::cout << "addProperty()\nchecking the string one more time: " << s <<std::endl;
 	if (std::strcmp((char*)toUpper(s).c_str(), (char*)s.c_str())) addS(toUpper(getProperty(s)));
 	else if (std::strcmp((char*)toLower(s).c_str(), (char*)s.c_str())) addS(toLower(getProperty(s)));
 	else addS(getProperty(s));
-	std::cout << "done\n";
+	std::cout << "SUCCESS!!!!!!!!!!!!!!!!\n";
 }
 
 void digAu::save()
@@ -87,6 +91,41 @@ void digAu::save()
 
 std::string formatDelimit(char*&);
 
+//This sample main works if you un comment it and comment mine out.
+//The only real difference is that my program has these objects in a class
+//and FileRef *f = new FileRef(s);
+//But mine crashes when calling the member function for each property
+//and the calls are exactly the same
+
+/*
+int main(int argc, char *argv[])
+{
+	for (int i = 5; i < argc; i++) {
+
+		cout << "******************** \"" << argv[i] << "\" ********************" << endl;
+
+		TagLib::FileRef f(argv[i]);
+
+		if (!f.isNull() && f.tag()) {
+
+			TagLib::Tag *tag = f.tag();
+
+			cout << "-- TAG (basic) --" << endl;
+			cout << "title   - \"" << tag->title() << "\"" << endl;
+			cout << "artist  - \"" << tag->artist() << "\"" << endl;
+			cout << "album   - \"" << tag->album() << "\"" << endl;
+			cout << "year    - \"" << tag->year() << "\"" << endl;
+			cout << "comment - \"" << tag->comment() << "\"" << endl;
+			cout << "track   - \"" << tag->track() << "\"" << endl;
+			cout << "genre   - \"" << tag->genre() << "\"" << endl;
+		}
+	}
+	system("pause");
+	return 0;
+}
+*/
+
+//My main. I put numbered comments to follow the steps that I think matter.
 int main(int argc, char* argv[])
 {
 	if (argc <=4 ) return -1;
@@ -136,10 +175,17 @@ int main(int argc, char* argv[])
 	for (unsigned int i = 0; i < inputFs.size(); i++)
 	{
 		std::cout << i << ") " << inputFs[i] << std::endl;
+
+		//*****************************************************
+		// (1) Creates a new digAu using some input file name
+	    //*****************************************************
 		digAu dio(inputFs[i]);
 		for (int j = 0; j < formatOpt.size(); i++) 
 		{
-			std::cout << formatOpt[j];
+			std::cout << "checking the string " << formatOpt[j]<<std::endl;
+			//****************************************************************************************
+			// (2) Supposed to be iterating through format options to create the new filename string
+			//****************************************************************************************
 			dio.addProperty(formatOpt[j]);
 		}
 		dio.save();
