@@ -76,7 +76,7 @@ namespace audioConvert
         {
             //output path or same dir [1]
             if (this.chkDefault.Checked) s = "\"\"";
-            else s = "\"" + this.txtOut.Text + "\"";
+            else s = "\"" + this.txtOut.Text + "\\\\\"";
 
             //selected codec [2]
             s += " " + this.listFormat.SelectedIndex + " ";

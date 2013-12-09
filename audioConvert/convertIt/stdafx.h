@@ -12,6 +12,16 @@
 #include <iostream>
 #include <sstream>
 #include <deque>
+#include <iomanip>
+#include <boost\filesystem.hpp>
+//#include <boost\fusion\include\deque.hpp>
+//#include <stdio.h>
+#include <fstream>
+
+#include "taglib\fileref.h"
+#include "taglib\tag.h"
+#include "taglib\tpropertymap.h"
+
 #include "stuff.h"
 
 //#pragma managed(push, off)

@@ -40,6 +40,48 @@ std::string toLower(std::string s)
 	return s;
 }
 
+std::string gimmeExt(std::string s)
+{
+	for (int i = s.length() - 1; i >= 0; i--)
+	{
+		if (s[i] == '.')
+		{
+			s = s.substr(i, s.length() - 1);
+			break;
+		}
+		else if (s[i] == '\\') break;
+	}
+	if (s[0] != '.') s = "";
+	return s;
+}
+
+std::string gimmePath(std::string s)
+{
+	for (int i = s.length() - 1; i >= 0; i--)
+	{
+		if (s[i] == '\\')
+		{
+			s = s.substr(0, i);
+			break;
+		}
+	}
+	if (s[s.length() - 1] != '\\') s = "";
+	return s;
+}
+
+std::string gimmeFile(std::string s)
+{
+	for (int i = s.length() - 1; i >= 0; i--)
+	{
+		if (s[i] == '\\')
+		{
+			s = s.substr(i, s.length() - 1);
+			break;
+		}
+	}
+	return s;
+}
+
 template<class T>
 void swap(T &a, T &b) //swaps the values of 2 variables
 {

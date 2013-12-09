@@ -3,16 +3,7 @@
 
 #include "stdafx.h"
 
-
-#include <iomanip>
-#include <stdio.h>
-#include <fstream>
-
-#include "taglib\fileref.h"
-#include "taglib\tag.h"
-#include "taglib\tpropertymap.h"
-
-using namespace std;
+//using namespace std;
 
 class digAu
 {
@@ -22,46 +13,46 @@ class digAu
 	std::string rename;
 	std::string getProperty(std::string);
 	void addS(std::string s){ rename += s; }
+	void init(char*);
 public:
 	digAu(){};
-	digAu(char*);
-	digAu(std::string s){digAu((char*)s.c_str());}
+	digAu(char* c){ init(c); };
+	digAu(std::string s){ init((char*)s.c_str()); }
 	void addProperty(std::string s);
 	void save();
 };
 
-digAu::digAu(char *s)
+
+void digAu::init(char *s)
 {
-	std::cout << s;
 	f = new TagLib::FileRef(s);
-	if (!(*f).isNull() && (*f).tag())
-	{
-		std::cout << "\nSuccessfully initialized. I think...\n";
-		tag = f->tag();
-	}
+	if (!(*f).isNull() && (*f).tag()) tag = f->tag();
 	rename = "";
 	name = s;
 }
 
 std::string digAu::getProperty(std::string s)
 {
-
-		std::cout << "getProperty()\n"; 
 		//*******************************************************************************
 		//(4)crashes at this line. I put this here to see if it was this or my crash ifs
 		//*******************************************************************************
-		std::cout << tag->title() << std::endl;
 
-		if (std::strcmp((char*)toUpper(s).c_str(), "ALBUM")) return tag->album().toCString();
-		else if (std::strcmp((char*)toUpper(s).c_str(), "ARTIST")) return tag->artist().toCString();
-		else if (std::strcmp((char*)toUpper(s).c_str(), "TITLE")) return tag->title().toCString();
-		else if (std::strcmp((char*)toUpper(s).c_str(), "Genre")) return tag->genre().toCString();
-		else if (std::strcmp((char*)s.c_str(), "year")) return static_cast<ostringstream*>(&(ostringstream() << tag->year()))->str();
-		else if (s[0] == ' ') return std::string(s.length(), ' ');
+		if (std::strcmp((char*)toUpper(s).c_str(), "ALBUM") == 0)
+			return tag->album().toCString();
+		else if (std::strcmp((char*)toUpper(s).c_str(), "ARTIST") == 0)
+			return tag->artist().toCString();
+		else if (std::strcmp((char*)toUpper(s).c_str(), "TITLE") == 0)
+			return tag->title().toCString();
+		else if (std::strcmp((char*)toUpper(s).c_str(), "Genre") == 0)
+			return tag->genre().toCString();
+		else if (std::strcmp((char*)s.c_str(), "year") == 0)
+			return static_cast<std::ostringstream*>(&(std::ostringstream() << tag->year()))->str();
+		else if (s[0] == ' ')
+			return std::string(s.length(), ' ');
 		else if (s[0] == '#')
 		{
 			std::stringstream ss;
-			ss << std::setw(s.length()) << std::setfill('0') << tag->track();
+			ss << std::setfill('0') << std::setw(s.length()) << tag->track();
 			return ss.str();
 		}
 		else return s;
@@ -72,21 +63,33 @@ void digAu::addProperty(std::string s)
 	//**********************************************************************************
 	// (3) this is fine, I hope. All the mayhem happens in digAu::getProperty() for now
 	//**********************************************************************************
-	std::cout << "addProperty()\nchecking the string one more time: " << s <<std::endl;
-	if (std::strcmp((char*)toUpper(s).c_str(), (char*)s.c_str())) addS(toUpper(getProperty(s)));
-	else if (std::strcmp((char*)toLower(s).c_str(), (char*)s.c_str())) addS(toLower(getProperty(s)));
+	if (std::strcmp((char*)toUpper(s).c_str(), (char*)s.c_str()) == 0)
+		addS(toUpper(getProperty(s)));
+	else if (std::strcmp((char*)toLower(s).c_str(), (char*)s.c_str()) == 0)
+		addS(toLower(getProperty(s)));
 	else addS(getProperty(s));
-	std::cout << "SUCCESS!!!!!!!!!!!!!!!!\n";
 }
 
 void digAu::save()
 {
+	rename += gimmeExt(name);
+
+	boost::filesystem::path path_file(rename);
+	if (path_file.has_parent_path())
+	{
+		path_file = path_file.parent_path();
+		if (!boost::filesystem::exists(path_file))
+			boost::filesystem::create_directories(path_file);
+	}
+
 	std::ifstream  src(name, std::ios::binary);
 	std::ofstream  dst(rename, std::ios::binary);
-	std::cout << "copying...\n";
 	dst << src.rdbuf();
 	std::cout << "done!\n";
-	tag->~Tag();
+
+	dst.flush();
+	dst.close();
+	src.close();
 }
 
 std::string formatDelimit(char*&);
@@ -136,10 +139,13 @@ int main(int argc, char* argv[])
 	//[4] name format
 	//[5-argc] input files
 	int codec;
+	
+	
+
 	std::deque<double> codecOpt;
 	std::deque<std::string> formatOpt, inputFs;
 
-	//formatOpt.push_back(argv[1]);
+	formatOpt.push_back(argv[1]);
 	codec = std::atoi(argv[2]);
 	
 	std::stringstream ss;
@@ -149,8 +155,6 @@ int main(int argc, char* argv[])
 	while (ss >> dTemp) codecOpt.push_back(dTemp);
 
 	ss.clear();
-
-	std::cout << argv[4] <<std::endl<<toUpper(argv[4])<< std::endl << argv[4];
 	
 	ss << formatDelimit(argv[4]);
 
@@ -162,32 +166,26 @@ int main(int argc, char* argv[])
 	//All info is collected. Now for some work
 
 	//test
-	std::cout << "Output directory: ?\n" //<< (formatOpt[0].length()>0 ? formatOpt[0] : "[Same as File]") << std::endl
+	std::cout << "Output directory: " << (formatOpt[0].length()>0 ? formatOpt[0] : "[Same as File]") << std::endl
 		<< "Selected codec: " << codec << std::endl
 		<< "Codec options..." << std::endl;
 
+	system("pause");
 	for (unsigned int i = 0; i < codecOpt.size(); i++)std::cout << i << ") " << codecOpt[i] << std::endl;
 
 	std::cout << "Format options" << std::endl;
 	for (unsigned int i = 0; i < formatOpt.size(); i++)std::cout << formatOpt[i].length() << ") " << formatOpt[i] << std::endl;
-
-	std::cout << "Input files" << std::endl;
-	for (unsigned int i = 0; i < inputFs.size(); i++)
+	
+	unsigned int x = inputFs.size();
+	for (unsigned int i = 0; i < x; i++)
 	{
-		std::cout << i << ") " << inputFs[i] << std::endl;
+		std::cout << "\nWorking with "<<inputFs[i] << std::endl;
 
 		//*****************************************************
 		// (1) Creates a new digAu using some input file name
 	    //*****************************************************
 		digAu dio(inputFs[i]);
-		for (int j = 0; j < formatOpt.size(); i++) 
-		{
-			std::cout << "checking the string " << formatOpt[j]<<std::endl;
-			//****************************************************************************************
-			// (2) Supposed to be iterating through format options to create the new filename string
-			//****************************************************************************************
-			dio.addProperty(formatOpt[j]);
-		}
+		for (int j = 0; j < formatOpt.size(); j++) dio.addProperty(formatOpt[j]);
 		dio.save();
 	}
 	system("pause");
@@ -197,18 +195,15 @@ int main(int argc, char* argv[])
 std::string formatDelimit(char* &s)
 {
 	std::string txt = s, t = "";
-	std::cout << "txt: " << txt << "\ns: " << s;
 	for (int i = 0; i < txt.length(); i++)
 	{
 		if (txt[i] == '<') while (txt[++i] != '>') t += txt[i];
 		else if (txt[i] == ' ') while (txt[i] == ' ') t += txt[i++];
 		else if (txt[i] == '#') while (txt[i] == '#') t += txt[i++];
-		else if (txt[i] == '\\') t += txt[i++];
-		else continue;
+		else if(txt[i] == '>') continue;
+		else t += txt[i++];
 		i--;
 		t += '|';
 	}
 	return t;
 }
-
-

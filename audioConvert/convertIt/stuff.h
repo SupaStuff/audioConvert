@@ -14,5 +14,8 @@ template<class T>void swap(T&, T&); //swap 2 values
 
 std::string toUpper(std::string);
 std::string toLower(std::string);
+std::string gimmeExt(std::string);
+std::string gimmePath(std::string);
+std::string gimmeFile(std::string);
 
 #endif
