@@ -14,7 +14,7 @@
 #include <deque>
 #include <iomanip>
 #include <boost\filesystem.hpp>
-//#include <boost\fusion\include\deque.hpp>
+#include <sndfile.h>
 //#include <stdio.h>
 #include <fstream>
 

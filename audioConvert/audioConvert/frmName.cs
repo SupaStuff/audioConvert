@@ -19,41 +19,41 @@ namespace audioConvert
             this.txtName.Text = s;
         }
 
+        private void add2txt()
+        {
+            //pastes a selected item's subItem[2] at the cursor in the text box
+            if (this.listName.SelectedItems.Count > 0) this.txtName.Paste(this.listName.SelectedItems[0].SubItems[2].Text);
+        }
+
         private void btnGo_Click(object sender, EventArgs e)
         {
-            this.txtFormat = this.txtName.Text;
+            this.txtFormat = this.txtName.Text; //store the txtbox in a String so the main frame can get it
             this.Close();
         }
 
         private void btnClear_Click(object sender, EventArgs e)
         {
-            this.txtName.Text = "";
+            this.txtName.Text = ""; //clears the textbox
         }
 
         private void btnDir_Click(object sender, EventArgs e)
         {
-            this.txtName.Paste("\\");
+            this.txtName.Paste("\\");//adds a \ character
         }
 
         private void btnSpace_Click(object sender, EventArgs e)
         {
-            this.txtName.Paste(" ");
+            this.txtName.Paste(" "); //adds a space
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            add2txt();
+            add2txt(); //when you click the button, adds the selected property to the textbox
         }
 
         private void listName_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            add2txt();
+            add2txt(); //when you double click a property, it adds it to the textbox
         }
-
-        private void add2txt()
-        {
-            if (this.listName.SelectedItems.Count > 0) this.txtName.Paste(this.listName.SelectedItems[0].SubItems[2].Text);
-        }
-
     }
 }

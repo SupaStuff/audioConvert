@@ -21,21 +21,27 @@ namespace audioConvert
 
         private void removeStuff()
         {
+            //removes selected items from the input listbox
             while (this.listIn.SelectedItems.Count != 0) this.listIn.Items.Remove(this.listIn.SelectedItems[0]);
         }
 
         private void addStuff(bool deleteIt)
         {
+            //open file dialog box
             OpenFileDialog openStuff = new OpenFileDialog();
             openStuff.Multiselect = true;
+            openStuff.Filter = "Audio Files (*.wav, *.ogg, *.flac)|*.wav;*.ogg;*.flac";
 
             if (openStuff.ShowDialog() == DialogResult.OK)
             {
+                //delete it is true for one button and false for another
                 if (deleteIt)
                 {
+                    //deletes existing items by selecting them and calling removeStuff()
                     for (int i = 0; i < this.listIn.Items.Count; i++) this.listIn.SetSelected(i, true);
                     removeStuff();
                 }
+                //add files from the openfile dialog box
                 foreach (String file in openStuff.FileNames) this.listIn.Items.Add(file);
             }
         }
@@ -52,23 +58,27 @@ namespace audioConvert
 
         private void btnOpen_Click(object sender, EventArgs e)
         {
-            addStuff(true);
+            addStuff(true);//delete first then add to the list
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            addStuff(false);
+            addStuff(false);//add to the existing list
         }
 
         private void btnOut_Click(object sender, EventArgs e)
         {
+            //folder dialog box for selecting the path
             FolderBrowserDialog folderStuff = new FolderBrowserDialog();
+            //store the folder in the text box
             if (folderStuff.ShowDialog() == DialogResult.OK) this.txtOut.Text = folderStuff.SelectedPath;
         }
 
         private void btnName_Click(object sender, EventArgs e)
         {
+            //brings up the format helper
             frmName formatHelp = new frmName(this.txtName.Text);
+            //puts the results in the text box
             if (formatHelp.ShowDialog() == DialogResult.OK) this.txtName.Text = formatHelp.txtFormat;
         }
 
@@ -96,6 +106,7 @@ namespace audioConvert
 
         private void chkDefault_CheckedChanged(object sender, EventArgs e)
         {
+            //checkbox enables/disables these button and textbox
             this.txtOut.Enabled ^= true;
             this.btnOut.Enabled ^= true;
         }

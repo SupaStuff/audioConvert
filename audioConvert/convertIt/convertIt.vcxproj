@@ -53,19 +53,20 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Program Files (x86)\taglib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\taglib\include;C:\Program Files %28x86%29\Mega-Nerd\libsndfile\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>C:\Program Files (x86)\taglib\lib\tag.lib;C:\Program Files (x86)\taglib\lib\tag_c.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\taglib\lib;C:\boost\libs;C:\boost\stage\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>C:\Program Files (x86)\taglib\lib\tag.lib;C:\Program Files (x86)\taglib\lib\tag_c.lib;C:\Program Files (x86)\Mega-Nerd\libsndfile\lib\libsndfile-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\taglib\lib;C:\boost\libs;C:\boost\stage\lib;C:\Program Files %28x86%29\Mega-Nerd\libsndfile\lib;C:\Program Files %28x86%29\lame;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent />
     <PreBuildEvent />
     <PreBuildEvent>
       <Command>xcopy /y "C:\Program Files (x86)\taglib\bin\*.dll" "$(OutDir)"
-xcopy /y "C:\Program Files (x86)\zlib\\bin\*.dll" "$(OutDir)"</Command>
+xcopy /y "C:\Program Files (x86)\zlib\\bin\*.dll" "$(OutDir)"
+xcopy /y "C:\Program Files (x86)\Mega-Nerd\libsndfile\bin\*.dll" "$(OutDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
