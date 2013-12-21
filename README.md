@@ -29,8 +29,11 @@ USAGE:
 	  zlib: http://www.zlib.net/
       
 	  taglib: http://taglib.github.io/
+	  
+	  libsndfile: http://www.mega-nerd.com/libsndfile/
+	Follow these instructions for each individually:
     
-	For both of them: Use cmake (I used the gui) to build them.
+	Use cmake (I used the gui) to build them. http://www.cmake.org/
 	
 	Source and build paths are the same. It's the folder with all the stuff in it. 
 	
@@ -42,17 +45,20 @@ USAGE:
 	
 	Then, open the generated .sln file.
 	
-	In Release mode, build zlib and in Debug mode build taglib.
+	In Release mode, build zlib and in Debug mode build taglib and libsndfile.
 	
-	In both cases, right click ALL_BUILD and build, then Right click INSTALL and build.
+	Right click ALL_BUILD and build, then Right click INSTALL and build.
     
-    Now everything in my project should be ready to compile. If it isn't, that's too bad.
+    Now everything in my project should be ready to compile. If it isn't, that's too bad...
   
   To Release:
     
 	It doesn't work.
 
+v2
+
+  fixed the taglib problem. For now it only converts between lossless formats(wav, flac, and ogg). All the other options do wav for now. The output files don't copy the properties of the input files.
 
 v1
   
-  uses taglib for reading the properties. It's broken. It's almostthe same as the sample code, but it crashes when retrieving the file properties.
+  uses taglib for reading the properties. It's broken. It's almost the same as the sample code, but it crashes when retrieving the file properties.
